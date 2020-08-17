@@ -2,11 +2,24 @@ language: "node_js"
 node_js:
   - '12'
 
-before_install:
+sudo: required
 
 services:
-    - docker
+  - docker
 
-before_script:
+script: 'true'
 
-  
+after_success:
+  - docker build -t mrwin95/multi-client ./client
+  - docker build -t mrwin95/multi-nginx ./nginx
+  - docker build -t mrwin95/multi-server ./server
+  - docker build -t mrwin95/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push mrwin95/multi-client
+  - docker push mrwin95/multi-nginx
+  - docker push mrwin95/multi-server
+  - docker push mrwin95/multi-worker
+#Login to docker cli
+
